@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f8f1ed">
+  <title>Nuestro Recuerdos ♡</title>
+  <meta name="description" content="Un pequeño universo para guardar nuestros viajes, nuestra historia y todos esos momentos que queremos recordar.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&family=Parisienne&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --cream: #faf6f0;
+      --paper: #fffdf9;
+      --pink: #d9a6ad;
+      --pink-light: #f0dce0;
+      --lavender: #ded9ec;
+      --ink: #51434b;
+      --muted: #92818a;
+      --sage: #dce4d8;
+      --line: #e9dfe0;
+      --shadow: 0 15px 45px rgba(94, 67, 79, .09);
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 90px;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--cream);
+      font-family: "DM Sans", sans-serif;
+      line-height: 1.65;
+    }
+
+    body.modal-open { overflow: hidden; }
+
+    button, a { -webkit-tap-highlight-color: transparent; }
+
+    button { font: inherit; }
+
+    a { color: inherit; text-decoration: none; }
+
+    img { display: block; max-width: 100%; }
+
+    .serif { font-family: "Cormorant Garamond", serif; }
+
+    .script { font-family: "Parisienne", cursive; }
+
+    .eyebrow {
+      color: #a77b89;
+      font-size: .69rem;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    /* Navegación */
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 7%;
+      background: rgba(250, 246, 240, .91);
+      border-bottom: 1px solid rgba(233, 223, 224, .7);
+      backdrop-filter: blur(14px);
+    }
+
+    .brand {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.45rem;
+      font-weight: 600;
+      letter-spacing: -.03em;
+    }
+
+    .brand span { color: #c18d9a; }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+      font-size: .78rem;
+      color: #776670;
+    }
+
+    .nav-links a:hover { color: #ad7889; }
+
+    /* Portada */
+
+    .hero {
+      min-height: 690px;
+      min-height: min(790px, 90svh);
+      display: grid;
+      grid-template-columns: 1.02fr .98fr;
+      align-items: center;
+      gap: 6%;
+      padding: 65px 9% 85px;
+      overflow: hidden;
+    }
+
+    .hero-copy { max-width: 540px; }
+
+    .hero h1 {
+      margin: 18px 0;
+      font-size: clamp(4rem, 7.5vw, 7.6rem);
+      font-weight: 500;
+      line-height: .83;
+      letter-spacing: -.055em;
+    }
+
+    .hero h1 span {
+      display: block;
+      color: #bb8796;
+      font-style: italic;
+      padding-left: 12%;
+    }
+
+    .hero-description {
+      max-width: 370px;
+      margin: 28px 0;
+      color: #84747c;
+      font-size: .94rem;
+    }
+
+    .hero-quote {
+      margin: 28px 0;
+      padding-left: 17px;
+      border-left: 2px solid #d7a9b2;
+      color: #806b75;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.5rem;
+      font-style: italic;
+    }
+
+    .button-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 13px;
+      padding: 14px 23px;
+      border: 0;
+      border-radius: 3px;
+      background: #b98494;
+      color: white;
+      cursor: pointer;
+      font-size: .78rem;
+      transition: background .25s, transform .25s;
+    }
+
+    .button-primary:hover {
+      background: #a76f81;
+      transform: translateY(-2px);
+    }
+
+    .hero-note {
+      margin-top: 17px;
+      color: #a3949b;
+      font-size: .72rem;
+    }
+
+    .hero-art {
+      position: relative;
+      width: 100%;
+      max-width: 480px;
+      margin: auto;
+      padding: 0 13px 18px 0;
+    }
+
+    .hero-photo {
+      position: relative;
+      z-index: 1;
+      height: 510px;
+      overflow: hidden;
+      border: 10px solid var(--paper);
+      box-shadow: var(--shadow);
+      transform: rotate(2deg);
+    }
+
+    .hero-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .hero-photo::after {
+      position: absolute;
+      inset: 0;
+      content: "";
+      background: linear-gradient(180deg, transparent 55%, rgba(48, 33, 42, .28));
+    }
+
+    .photo-caption {
+      position: absolute;
+      z-index: 2;
+      right: 22px;
+      bottom: 22px;
+      left: 22px;
+      color: white;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.7rem;
+      font-style: italic;
+    }
+
+    .floating-note {
+      position: absolute;
+      z-index: 3;
+      right: -20px;
+      bottom: 55px;
+      width: 145px;
+      padding: 18px 12px;
+      background: #f1e7f0;
+      box-shadow: var(--shadow);
+      text-align: center;
+      transform: rotate(5deg);
+    }
+
+    .floating-note .script { font-size: 1.6rem; }
+
+    .floating-note small {
+      display: block;
+      color: #907986;
+      font-size: .67rem;
+    }
+
+    .hero-decoration {
+      position: absolute;
+      top: -35px;
+      right: -5px;
+      width: 120px;
+      height: 120px;
+      border: 1px solid #ddc8d9;
+      border-radius: 50%;
+    }
+
+    /* Estructura de las secciones */
+
+    .section {
+      padding: 100px 9%;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 43px;
+    }
+
+    .section-heading h2 {
+      margin: 8px 0 0;
+      font-size: clamp(2.7rem, 5vw, 4.5rem);
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: -.04em;
+    }
+
+    .section-heading p {
+      max-width: 310px;
+      margin: 0;
+      color: var(--muted);
+      font-size: .85rem;
+    }
+
+    /* Álbumes */
+
+    .travel-section {
+      background: #f2e9e6;
+    }
+
+    .album-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 34px 25px;
+    }
+
+    .album-card {
+      position: relative;
+      display: block;
+      width: 100%;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      text-align: left;
+      cursor: pointer;
+      perspective: 1000px;
+    }
+
+    .book {
+      position: relative;
+      height: 330px;
+      padding: 12px 15px 12px 20px;
+      border-radius: 3px 7px 7px 3px;
+      background: #d7b2b8;
+      box-shadow: 5px 7px 0 #c69ca5, 8px 11px 25px rgba(91, 63, 75, .13);
+      transition: transform .35s, box-shadow .35s;
+      transform-origin: left center;
+    }
+
+    .album-card:hover .book {
+      transform: translateY(-6px) rotateY(-5deg);
+      box-shadow: 8px 12px 0 #c69ca5, 13px 19px 28px rgba(91, 63, 75, .15);
+    }
+
+    .book::before {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 9px;
+      width: 2px;
+      content: "";
+      background: rgba(255,255,255,.55);
+    }
+
+    .book-cover {
+      position: relative;
+      height: 100%;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.7);
+      background: #eee0dc;
+    }
+
+    .book-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .7s;
+    }
+
+    .album-card:hover .book-cover img { transform: scale(1.045); }
+
+    .book-cover::after {
+      position: absolute;
+      inset: 0;
+      content: "";
+      background: linear-gradient(180deg, rgba(33,25,30,.02), rgba(33,25,30,.47));
+    }
+
+    .cover-label {
+      position: absolute;
+      z-index: 1;
+      right: 14px;
+      bottom: 19px;
+      left: 14px;
+      color: white;
+      text-align: center;
+    }
+
+    .cover-label .eyebrow { color: #fff1f3; }
+
+    .cover-label h3 {
+      margin: 3px 0 0;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 2.15rem;
+      font-weight: 500;
+      line-height: 1;
+    }
+
+    .album-info {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 20px 3px 0;
+    }
+
+    .album-info h4 {
+      margin: 0;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.65rem;
+      font-weight: 600;
+      line-height: 1.1;
+    }
+
+    .album-info p {
+      margin: 7px 0 0;
+      color: #897880;
+      font-size: .76rem;
+    }
+
+    .album-arrow {
+      flex-shrink: 0;
+      color: #ae7b8c;
+      font-size: 1.35rem;
+    }
+
+    .book.lavender { background: #bdb5d1; box-shadow: 5px 7px 0 #aaa0c1, 8px 11px 25px rgba(91,63,75,.13); }
+    .book.sage { background: #b8c8b4; box-shadow: 5px 7px 0 #9eaf9a, 8px 11px 25px rgba(91,63,75,.13); }
+    .book.cream { background: #d9c8ad; box-shadow: 5px 7px 0 #c7b392, 8px 11px 25px rgba(91,63,75,.13); }
+
+    /* Nuestra historia */
+
+    .story-section { background: var(--paper); }
+
+    .story-layout {
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      align-items: center;
+      gap: 9%;
+    }
+
+    .story-image {
+      position: relative;
+      padding: 0 16px 18px 0;
+    }
+
+    .story-image img {
+      width: 100%;
+      height: 480px;
+      object-fit: cover;
+      border: 9px solid white;
+      box-shadow: var(--shadow);
+      transform: rotate(-2deg);
+    }
+
+    .story-image-note {
+      position: absolute;
+      right: -10px;
+      bottom: 30px;
+      padding: 15px 22px;
+      background: var(--lavender);
+      font-family: "Parisienne", cursive;
+      font-size: 1.6rem;
+      transform: rotate(3deg);
+    }
+
+    .story-copy h2 {
+      margin: 10px 0 18px;
+      font-size: clamp(3rem, 5vw, 4.8rem);
+      font-weight: 500;
+      line-height: .97;
+    }
+
+    .story-copy > p {
+      color: #857780;
+      font-size: .91rem;
+    }
+
+    .timeline {
+      position: relative;
+      margin-top: 33px;
+      padding-left: 25px;
+      border-left: 1px solid #d9bac7;
+    }
+
+    .timeline-item {
+      position: relative;
+      padding: 0 0 24px 10px;
+    }
+
+    .timeline-item:last-child { padding-bottom: 0; }
+
+    .timeline-item::before {
+      position: absolute;
+      top: 7px;
+      left: -31px;
+      width: 11px;
+      height: 11px;
+      border: 2px solid #c38e9f;
+      border-radius: 50%;
+      background: white;
+      content: "";
+    }
+
+    .timeline-item time {
+      color: #b17d8d;
+      font-size: .68rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .timeline-item h3 {
+      margin: 4px 0;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.55rem;
+      font-weight: 600;
+      line-height: 1.1;
+    }
+
+    .timeline-item p {
+      margin: 5px 0 0;
+      color: #8c7d84;
+      font-size: .8rem;
+    }
+
+    /* Cierre */
+
+    .closing {
+      padding: 95px 20px 100px;
+      background: #e8dce8;
+      text-align: center;
+    }
+
+    .closing .script {
+      color: #a67589;
+      font-size: 2.1rem;
+    }
+
+    .closing h2 {
+      margin: 8px auto 15px;
+      font-size: clamp(3rem, 6vw, 5.4rem);
+      font-weight: 500;
+      line-height: .95;
+    }
+
+    .closing p {
+      max-width: 430px;
+      margin: 20px auto 0;
+      color: #82717e;
+      font-size: .88rem;
+    }
+
+    footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 24px 9%;
+      color: #998891;
+      background: var(--cream);
+      font-size: .7rem;
+    }
+
+    footer .script {
+      color: #b47f91;
+      font-size: 1.25rem;
+    }
+
+    /* Modal del álbum */
+
+    .modal {
+      position: fixed;
+      z-index: 100;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+      background: rgba(47, 35, 44, .57);
+      backdrop-filter: blur(8px);
+    }
+
+    .modal.visible { display: flex; }
+
+    .modal-panel {
+      position: relative;
+      width: min(100%, 1050px);
+      max-height: 92vh;
+      overflow: auto;
+      padding: clamp(20px, 4vw, 45px);
+      background: var(--paper);
+      box-shadow: 0 30px 100px rgba(30, 20, 30, .25);
+      animation: arrive .3s ease both;
+    }
+
+    @keyframes arrive {
+      from { opacity: 0; transform: translateY(12px) scale(.99); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 18px;
+      z-index: 3;
+      display: grid;
+      width: 40px;
+      height: 40px;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: white;
+      color: var(--ink);
+      cursor: pointer;
+      font-size: 1.3rem;
+    }
+
+    .modal-header { padding-right: 40px; }
+
+    .modal-header h2 {
+      margin: 7px 0;
+      font-size: clamp(2.8rem, 6vw, 4.6rem);
+      font-weight: 500;
+      line-height: 1;
+    }
+
+    .modal-header p {
+      margin: 12px 0 25px;
+      color: var(--muted);
+      font-size: .87rem;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .gallery-item {
+      position: relative;
+      min-width: 0;
+      min-height: 150px;
+      overflow: hidden;
+      padding: 0;
+      border: 0;
+      background: #eee5e7;
+      cursor: pointer;
+    }
+
+    .gallery-item img,
+    .gallery-item video {
+      display: block;
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      transition: transform .35s;
+    }
+
+    .gallery-item:hover img { transform: scale(1.04); }
+
+    .gallery-item.video-item::after {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      display: grid;
+      width: 45px;
+      height: 45px;
+      place-items: center;
+      border: 1px solid rgba(255,255,255,.8);
+      border-radius: 50%;
+      background: rgba(63,43,57,.5);
+      color: white;
+      content: "▶";
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .gallery-caption {
+      padding: 9px 10px;
+      background: #f8f1f1;
+      color: #84717c;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.12rem;
+      text-align: left;
+    }
+
+    .empty-hint {
+      margin-top: 25px;
+      padding: 17px;
+      border: 1px dashed #d9c5cf;
+      color: #927c89;
+      font-size: .8rem;
+      text-align: center;
+    }
+
+    /* Visor de fotografía */
+
+    .lightbox {
+      position: fixed;
+      z-index: 120;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+      background: rgba(24, 18, 25, .92);
+    }
+
+    .lightbox.visible { display: flex; }
+
+    .lightbox img {
+      max-width: min(100%, 1200px);
+      max-height: 82vh;
+      object-fit: contain;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      padding: 10px 15px;
+      border: 1px solid rgba(255,255,255,.35);
+      background: transparent;
+      color: white;
+      cursor: pointer;
+      font-size: 1.4rem;
+    }
+
+    .lightbox-caption {
+      position: absolute;
+      right: 20px;
+      bottom: 18px;
+      left: 20px;
+      color: white;
+      text-align: center;
+      font-size: .85rem;
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+
+    .fade-in.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+      .fade-in { opacity: 1; transform: none; }
+    }
+
+    /* Adaptación a pantallas pequeñas */
+
+    @media (max-width: 900px) {
+      .hero { padding-right: 6%; padding-left: 6%; gap: 4%; }
+      .hero-photo { height: 420px; }
+      .section { padding: 80px 6%; }
+      .album-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 35px 22px; }
+      .book { height: 310px; }
+      .story-layout { gap: 6%; }
+      .story-image img { height: 400px; }
+    }
+
+    @media (max-width: 620px) {
+      .nav { padding: 13px 5%; }
+      .brand { font-size: 1.25rem; }
+      .nav-links { gap: 13px; font-size: .69rem; }
+      .nav-links a:last-child { display: none; }
+
+      .hero {
+        min-height: auto;
+        grid-template-columns: 1fr;
+        gap: 45px;
+        padding: 75px 7% 70px;
+      }
+
+      .hero h1 { font-size: clamp(4.3rem, 17vw, 6rem); }
+      .hero-art { width: 87%; }
+      .hero-photo { height: 390px; }
+      .floating-note { right: -28px; }
+
+      .section { padding: 70px 6%; }
+      .section-heading { align-items: start; flex-direction: column; gap: 13px; }
+      .section-heading h2 { font-size: 3.5rem; }
+
+      .album-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 27px 15px; }
+      .book { height: clamp(190px, 59vw, 280px); padding: 8px 8px 8px 14px; }
+      .book::before { left: 6px; }
+      .cover-label { right: 5px; bottom: 10px; left: 5px; }
+      .cover-label h3 { font-size: clamp(1.35rem, 5vw, 1.9rem); }
+      .cover-label .eyebrow { font-size: .53rem; letter-spacing: .1em; }
+      .album-info h4 { font-size: 1.3rem; }
+      .album-info p { font-size: .7rem; }
+      .album-arrow { font-size: 1rem; }
+
+      .story-layout { grid-template-columns: 1fr; gap: 42px; }
+      .story-image { width: 87%; margin: auto; }
+      .story-image img { height: 390px; }
+      .story-copy h2 { font-size: 3.8rem; }
+
+      .closing { padding: 75px 7%; }
+      footer { padding: 22px 6%; }
+
+      .modal { padding: 8px; }
+      .modal-panel { max-height: 95vh; padding: 27px 16px; }
+      .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+      .gallery-item img, .gallery-item video { height: 165px; }
+      .gallery-caption { font-size: 1rem; }
+      .lightbox { padding: 12px; }
+    }
+
+    @media (max-width: 370px) {
+      .nav-links { gap: 9px; }
+      .album-grid { gap: 25px 11px; }
+      .album-info h4 { font-size: 1.15rem; }
+      .book { height: 185px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="nav">
+    <a href="#inicio" class="brand">Nuestro <span>Recuerdos ♡</span></a>
+    <div class="nav-links">
+      <a href="#viajes">Los viajes</a>
+      <a href="#historia">Nuestra historia</a>
+      <a href="#final">Para ti</a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero" id="inicio">
+      <div class="hero-copy fade-in">
+        <span class="eyebrow">Un lugar solo para nosotros</span>
+        <h1 class="serif">Nuestro <span>pequeño</span> mundo.</h1>
+        <p class="hero-description">
+          Hay momentos que pasan una vez, lugares que se quedan con nosotros
+          y personas con las que cualquier destino se convierte en hogar.
+          Este es nuestro rincón para guardar todo eso.
+        </p>
+        <blockquote class="hero-quote">
+          «De todos los lugares del mundo, mi favorito siempre será a tu lado».
+        </blockquote>
+        <a class="button-primary" href="#viajes">
+          Explorar nuestros recuerdos <span>↗</span>
+        </a>
+        <p class="hero-note">Hecho con cariño, para nosotros dos.</p>
+      </div>
+
+      <div class="hero-art fade-in">
+        <div class="hero-decoration"></div>
+        <div class="hero-photo">
+          <img
+            src="https://images.unsplash.com/photo-1511988617509-a57c8a288659?auto=format&fit=crop&w=1100&q=85"
+            alt="Un momento especial para recordar"
+          >
+          <div class="photo-caption">Nuestra historia, página a página.</div>
+        </div>
+        <div class="floating-note">
+          <span class="script">Tú y yo</span>
+          <small>En cualquier lugar ♡</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="section travel-section" id="viajes">
+      <div class="section-heading fade-in">
+        <div>
+          <span class="eyebrow">Capítulos de nuestra historia</span>
+          <h2 class="serif">El mundo que<br>hemos compartido.</h2>
+        </div>
+        <p>Cada viaje tiene su propia historia. Abre un álbum y volvamos a ese pequeño pedacito de tiempo.</p>
+      </div>
+
+      <div class="album-grid" id="albumGrid"></div>
+    </section>
+
+    <section class="section story-section" id="historia">
+      <div class="story-layout">
+        <div class="story-image fade-in">
+          <img
+            src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=1000&q=85"
+            alt="Un recuerdo romántico"
+            loading="lazy"
+          >
+          <div class="story-image-note">Lo mejor está por venir ♡</div>
+        </div>
+
+        <div class="story-copy fade-in">
+          <span class="eyebrow">Antes, durante y todo lo que vendrá</span>
+          <h2 class="serif">Y así comenzó<br>lo nuestro.</h2>
+          <p>
+            No todo lo importante ocurre lejos de casa. A veces, los recuerdos
+            más bonitos nacen en un día cualquiera, en una conversación que
+            se alarga o en una mirada que lo cambia todo.
+          </p>
+          <p>
+            Este espacio es para esos momentos también. Para recordar de dónde
+            venimos, celebrar lo que somos y dejar un hueco para todo lo que
+            todavía nos queda por vivir.
+          </p>
+
+          <div class="timeline" id="timeline"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing" id="final">
+      <span class="script">Para mi persona favorita</span>
+      <h2 class="serif">Esto es solo<br>el comienzo.</h2>
+      <p>
+        Todavía nos quedan caminos por descubrir, fotografías por hacer,
+        lugares a los que volver y mil historias que aún no sabemos que
+        viviremos. Qué suerte poder descubrirlas contigo.
+      </p>
+      <p class="script">Te elegiría en cada destino. ♡</p>
+    </section>
+  </main>
+
+  <footer>
+    <span>Nuestro Recuerdos · Un álbum sin final</span>
+    <span class="script">Tú + yo ♡</span>
+  </footer>
+
+  <!-- Ventana que contiene cada álbum -->
+  <div class="modal" id="albumModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-panel">
+      <button class="modal-close" id="closeModal" aria-label="Cerrar álbum">×</button>
+      <div class="modal-header">
+        <span class="eyebrow" id="modalDate"></span>
+        <h2 class="serif" id="modalTitle">Nuestro viaje</h2>
+        <p id="modalDescription"></p>
+      </div>
+      <div class="gallery" id="gallery"></div>
+      <div class="empty-hint">
+        Este álbum está esperando nuestras fotos y vídeos reales. ♡
+      </div>
+    </div>
+  </div>
+
+  <!-- Visor para ampliar las fotografías -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Fotografía ampliada">
+    <button class="lightbox-close" id="closeLightbox" aria-label="Cerrar fotografía">×</button>
+    <img id="lightboxImage" src="" alt="">
+    <div class="lightbox-caption" id="lightboxCaption"></div>
+  </div>
+
+  <script>
+    /*
+      PERSONALIZACIÓN:
+      1. Cambia los nombres, fechas y descripciones de los viajes.
+      2. Sustituye las imágenes de ejemplo por las tuyas.
+      3. Puedes añadir o quitar viajes duplicando o eliminando objetos
+         dentro de la lista albums.
+    */
+
+    const albums = [
+      {
+        id: "escapada",
+        title: "Nuestra escapada",
+        location: "Un lugar por recordar",
+        date: "Nuestro primer capítulo",
+        description: "Unos días juntos que merecen quedarse para siempre.",
+        cover: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=900&q=85",
+        color: "",
+        photos: [
+          {
+            src: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1000&q=85",
+            caption: "Un paisaje para recordar"
+          },
+          {
+            src: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1000&q=85",
+            caption: "Perdernos un poquito"
+          },
+          {
+            src: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=1000&q=85",
+            caption: "El mundo ahí fuera"
+          }
+        ]
+      },
+      {
+        id: "mar",
+        title: "Días de mar",
+        location: "Nuestra aventura azul",
+        date: "Sol, sal y nosotros",
+        description: "De esos días en los que el tiempo parece ir más despacio.",
+        cover: "https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=900&q=85",
+        color: "lavender",
+        photos: [
+          {
+            src: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1000&q=85",
+            caption: "Frente al mar"
+          },
+          {
+            src: "https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&w=1000&q=85",
+            caption: "Una tarde sin prisa"
+          },
+          {
+            src: "https://images.unsplash.com/photo-1473116763249-2faaef81ccda?auto=format&fit=crop&w=1000&q=85",
+            caption: "Donde termina la orilla"
+          }
+        ]
+      },
+      {
+        id: "ciudad",
+        title: "Calles nuevas",
+        location: "Una ciudad por descubrir",
+        date: "Paseos sin mapa",
+        description: "Perdernos por calles desconocidas y encontrar rincones favoritos.",
+        cover: "https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=900&q=85",
+        color: "sage",
+        photos: [
+          {
+            src: "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=1000&q=85",
+            caption: "Una calle bonita"
+          },
+          {
+            src: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=1000&q=85",
+            caption: "La ciudad despierta"
+          },
+          {
+            src: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=1000&q=85",
+            caption: "Pequeños detalles"
+          }
+        ]
+      },
+      {
+        id: "atardeceres",
+        title: "Cielos bonitos",
+        location: "Colección de atardeceres",
+        date: "Momentos dorados",
+        description: "Esos instantes en los que parar y mirar ya es suficiente.",
+        cover: "https://images.unsplash.com/photo-1472120435266-53107fd0c44a?auto=format&fit=crop&w=900&q=85",
+        color: "cream",
+        photos: [
+          {
+            src: "https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=1000&q=85",
+            caption: "La última luz del día"
+          },
+          {
+            src: "https://images.unsplash.com/photo-1495616811223-4d98c6e9c869?auto=format&fit=crop&w=1000&q=85",
+            caption: "El cielo de aquel día"
+          },
+          {
+            src: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1000&q=85",
+            caption: "Quedarnos un ratito más"
+          }
+        ]
+      },
+      {
+        id: "naturaleza",
+        title: "Entre montañas",
+        location: "Aire fresco y calma",
+        date: "A nuestra manera",
+        description: "Caminos, naturaleza y la felicidad de estar juntos.",
+        cover: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=900&q=85",
+        color: "sage",
+        photos: [
+          {
+            src: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1000&q=85",
+            caption: "Montañas infinitas"
+          },
+          {
+            src: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1000&q=85",
+            caption: "Un paseo entre árboles"
+          },
+          {
+            src: "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=1000&q=85",
+            caption: "La calma que necesitábamos"
+          }
+        ]
+      },
+      {
+        id: "proximamente",
+        title: "Y muchos más…",
+        location: "Nuestro próximo capítulo",
+        date: "Continuará",
+        description: "Todavía quedan destinos que ni siquiera imaginamos.",
+        cover: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=85",
+        color: "lavender",
+        photos: [
+          {
+            src: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1000&q=85",
+            caption: "La próxima aventura"
+          }
+        ]
+      }
+    ];
+
+    /*
+      Cambia estos recuerdos por fechas reales cuando quieras.
+      Deja la lista vacía si prefieres ocultar la línea temporal.
+    */
+
+    const memories = [
+      {
+        date: "El principio",
+        title: "Cuando empezó lo nuestro",
+        description: "Aquí guardaremos el recuerdo de cómo empezó nuestra historia."
+      },
+      {
+        date: "Un día especial",
+        title: "Nuestro primer gran recuerdo",
+        description: "Ese momento que siempre nos hará sonreír al recordarlo."
+      },
+      {
+        date: "Lo que viene",
+        title: "Todas nuestras próximas aventuras",
+        description: "Hay capítulos que todavía están por escribir."
+      }
+    ];
+
+    const albumGrid = document.getElementById("albumGrid");
+    const modal = document.getElementById("albumModal");
+    const gallery = document.getElementById("gallery");
+    const lightbox = document.getElementById("lightbox");
+
+    function renderAlbums() {
+      albumGrid.innerHTML = albums.map((album, index) => `
+        <button class="album-card fade-in" type="button"
+          data-album="${album.id}" aria-label="Abrir álbum: ${album.title}">
+          <div class="book ${album.color || ""}">
+            <div class="book-cover">
+              <img src="${album.cover}" alt="" loading="lazy">
+              <div class="cover-label">
+                <span class="eyebrow">${album.date}</span>
+                <h3>${album.title}</h3>
+              </div>
+            </div>
+          </div>
+          <div class="album-info">
+            <div>
+              <h4>${album.title}</h4>
+              <p>${album.location}</p>
+            </div>
+            <span class="album-arrow" aria-hidden="true">↗</span>
+          </div>
+        </button>
+      `).join("");
+
+      albumGrid.querySelectorAll("[data-album]").forEach(button => {
+        button.addEventListener("click", () => {
+          openAlbum(button.dataset.album);
+        });
+      });
+
+      observeFadeIns();
+    }
+
+    function renderTimeline() {
+      const timeline = document.getElementById("timeline");
+      timeline.innerHTML = memories.map(memory => `
+        <article class="timeline-item">
+          <time>${memory.date}</time>
+          <h3>${memory.title}</h3>
+          <p>${memory.description}</p>
+        </article>
+      `).join("");
+    }
+
+    function openAlbum(id) {
+      const album = albums.find(item => item.id === id);
+      if (!album) return;
+
+      document.getElementById("modalDate").textContent = album.date;
+      document.getElementById("modalTitle").textContent = album.title;
+      document.getElementById("modalDescription").textContent =
+        album.description + " · " + album.location;
+
+      gallery.innerHTML = album.photos.map((photo, index) => {
+        if (photo.type === "video") {
+          return `
+            <div class="gallery-item video-item">
+              <video controls preload="metadata" playsinline
+                aria-label="${photo.caption}"
+                poster="${photo.poster || album.cover}">
+                <source src="${photo.src}" type="video/mp4">
+                Tu navegador no puede reproducir este vídeo.
+              </video>
+              <div class="gallery-caption">${photo.caption}</div>
+            </div>
+          `;
+        }
+
+        return `
+          <button class="gallery-item" type="button"
+            data-photo="${index}" aria-label="Ampliar: ${photo.caption}">
+            <img src="${photo.src}" alt="${photo.caption}" loading="lazy">
+            <div class="gallery-caption">${photo.caption}</div>
+          </button>
+        `;
+      }).join("");
+
+      gallery.querySelectorAll("[data-photo]").forEach(button => {
+        button.addEventListener("click", () => {
+          const photo = album.photos[Number(button.dataset.photo)];
+          openLightbox(photo.src, photo.caption);
+        });
+      });
+
+      modal.classList.add("visible");
+      document.body.classList.add("modal-open");
+      document.getElementById("closeModal").focus();
+    }
+
+    function closeAlbum() {
+      modal.classList.remove("visible");
+      document.body.classList.remove("modal-open");
+    }
+
+    function openLightbox(src, caption) {
+      document.getElementById("lightboxImage").src = src;
+      document.getElementById("lightboxImage").alt = caption;
+      document.getElementById("lightboxCaption").textContent = caption;
+      lightbox.classList.add("visible");
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove("visible");
+      document.getElementById("lightboxImage").src = "";
+    }
+
+    document.getElementById("closeModal").addEventListener("click", closeAlbum);
+    document.getElementById("closeLightbox").addEventListener("click", closeLightbox);
+
+    modal.addEventListener("click", event => {
+      if (event.target === modal) closeAlbum();
+    });
+
+    lightbox.addEventListener("click", event => {
+      if (event.target === lightbox) closeLightbox();
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") {
+        if (lightbox.classList.contains("visible")) {
+          closeLightbox();
+        } else if (modal.classList.contains("visible")) {
+          closeAlbum();
+        }
+      }
+    });
+
+    let fadeObserver;
+
+    function observeFadeIns() {
+      if (fadeObserver) fadeObserver.disconnect();
+
+      if (!("IntersectionObserver" in window)) {
+        document.querySelectorAll(".fade-in").forEach(element => {
+          element.classList.add("in-view");
+        });
+        return;
+      }
+
+      fadeObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("in-view");
+            fadeObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12 });
+
+      document.querySelectorAll(".fade-in:not(.in-view)").forEach(element => {
+        fadeObserver.observe(element);
+      });
+    }
+
+    renderAlbums();
+    renderTimeline();
+    observeFadeIns();
+  </script>
+</body>
+</html>
