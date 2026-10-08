@@ -337,6 +337,144 @@ img {
     animation: none;
   }
 }
+  
+/* ===== MAGIA PASTEL: MOVIMIENTO Y CUENTO ===== */
+
+.decoracion-amor {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  overflow: hidden;
+  pointer-events: none;
+  background: transparent;
+}
+
+.adornito {
+  position: absolute;
+  display: block;
+  user-select: none;
+  line-height: 1;
+  will-change: transform;
+  filter: drop-shadow(0 5px 8px rgba(196, 143, 190, 0.22));
+}
+
+/* Corazones suaves, grandes y románticos */
+.adornito.corazon {
+  font-size: clamp(30px, 4vw, 54px);
+  animation: flotarCorazonMagico 5s ease-in-out infinite;
+}
+
+/* Flores de cuento */
+.adornito.flor {
+  font-size: clamp(27px, 3.5vw, 46px);
+  animation: bailarFlorMagica 7s ease-in-out infinite;
+}
+
+/* Estrellas brillantes */
+.adornito.brillo {
+  font-size: clamp(25px, 3vw, 39px);
+  animation: brillarMagico 3.5s ease-in-out infinite;
+}
+
+/* Colores suaves para los distintos adornos */
+.amor-1, .amor-3, .amor-6, .amor-8, .amor-10 {
+  filter: drop-shadow(0 5px 10px rgba(220, 139, 178, 0.3));
+}
+
+.amor-2, .amor-5, .amor-9 {
+  filter: drop-shadow(0 5px 10px rgba(181, 153, 198, 0.25));
+}
+
+.amor-4, .amor-7 {
+  filter: drop-shadow(0 0 12px rgba(255, 222, 160, 0.7));
+}
+
+/* Movimiento flotante de los corazones */
+@keyframes flotarCorazonMagico {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) rotate(-10deg) scale(1);
+  }
+  25% {
+    transform: translate3d(12px, -18px, 0) rotate(4deg) scale(1.08);
+  }
+  50% {
+    transform: translate3d(-5px, -30px, 0) rotate(12deg) scale(1.03);
+  }
+  75% {
+    transform: translate3d(-12px, -12px, 0) rotate(-3deg) scale(1.1);
+  }
+}
+
+/* Las flores se mecen suavemente */
+@keyframes bailarFlorMagica {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) rotate(-12deg);
+  }
+  50% {
+    transform: translate3d(10px, -20px, 0) rotate(12deg);
+  }
+}
+
+/* Las estrellas titilan */
+@keyframes brillarMagico {
+  0%, 100% {
+    transform: scale(.8) rotate(0deg);
+    opacity: .45;
+  }
+  50% {
+    transform: scale(1.2) rotate(25deg);
+    opacity: .95;
+  }
+}
+
+/* En móviles, mantenemos la magia sin tapar demasiado */
+@media (max-width: 600px) {
+  .adornito.corazon { font-size: 29px; }
+  .adornito.flor { font-size: 25px; }
+  .adornito.brillo { font-size: 22px; }
+}
+
+/* Respeto a la preferencia de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  .adornito {
+    animation: none !important;
+  }
+}
+  
+/* ===== ACABADO DE CUENTO DE HADAS ===== */
+
+body {
+  background:
+    radial-gradient(ellipse at 8% 12%, rgba(255, 218, 234, .58), transparent 36%),
+    radial-gradient(ellipse at 92% 24%, rgba(225, 213, 255, .48), transparent 34%),
+    radial-gradient(ellipse at 50% 100%, rgba(255, 235, 218, .55), transparent 42%),
+    #fff9f6;
+}
+
+/* Tarjetas con un acabado de álbum encantado */
+.card,
+.album,
+.memory,
+.photo-card {
+  border: 1px solid rgba(231, 195, 215, .65);
+  box-shadow:
+    0 8px 24px rgba(174, 133, 163, .10),
+    0 0 0 4px rgba(255, 255, 255, .45);
+}
+
+/* Transición delicada */
+.card,
+.album,
+.memory,
+.photo-card,
+button {
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+
+/* Botones de tonos pastel */
+button {
+  border-color: rgba(218, 174, 201, .75);
+}
   </style>
 </head>
 <body>
