@@ -517,13 +517,35 @@
       padding: 13px;
       background: #e2d1c5;
       box-shadow: 0 22px 60px rgba(90,65,75,.17), 0 2px 5px rgba(90,65,75,.08);
-      transform-origin: center;
-      animation: pageTurn .32s ease;
+      perspective: 1400px;
     }
 
-    @keyframes pageTurn {
-      from { opacity: .45; transform: perspective(1200px) rotateY(3deg) translateX(5px); }
-      to { opacity: 1; transform: perspective(1200px) rotateY(0) translateX(0); }
+    /* La página entra girando ligeramente, como al hojear un álbum real. */
+    .open-book.turn-forward .book-page {
+      transform-origin: left center;
+      animation: pageFlipForward .48s cubic-bezier(.22,.68,.2,1) both;
+    }
+
+    .open-book.turn-backward .book-page {
+      transform-origin: right center;
+      animation: pageFlipBackward .48s cubic-bezier(.22,.68,.2,1) both;
+    }
+
+    @keyframes pageFlipForward {
+      0% { opacity: .45; transform: rotateY(-9deg) translateX(10px); filter: brightness(.96); }
+      55% { opacity: .9; }
+      100% { opacity: 1; transform: rotateY(0) translateX(0); filter: brightness(1); }
+    }
+
+    @keyframes pageFlipBackward {
+      0% { opacity: .45; transform: rotateY(9deg) translateX(-10px); filter: brightness(.96); }
+      55% { opacity: .9; }
+      100% { opacity: 1; transform: rotateY(0) translateX(0); filter: brightness(1); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .open-book.turn-forward .book-page,
+      .open-book.turn-backward .book-page { animation-duration: .01ms; }
     }
 
     .book-page {
@@ -1063,6 +1085,7 @@
     const pageDots = document.getElementById("pageDots");
     let activeAlbum = null;
     let activePage = 0;
+    let pageTurnDirection = 0;
 
     function renderAlbums() {
       albumGrid.innerHTML = albums.map(album => `
@@ -1155,21 +1178,28 @@
 
       pageDots.querySelectorAll("[data-page]").forEach(dot => {
         dot.addEventListener("click", () => {
-          activePage = Number(dot.dataset.page);
+          const destination = Number(dot.dataset.page);
+          if (destination === activePage) return;
+          pageTurnDirection = destination > activePage ? 1 : -1;
+          activePage = destination;
           renderBookPage();
         });
       });
 
       const openBook = document.getElementById("openBook");
-      openBook.style.animation = "none";
+      openBook.classList.remove("turn-forward", "turn-backward");
       void openBook.offsetWidth;
-      openBook.style.animation = "";
+      if (pageTurnDirection !== 0) {
+        openBook.classList.add(pageTurnDirection > 0 ? "turn-forward" : "turn-backward");
+      }
+      pageTurnDirection = 0;
     }
 
     function changePage(direction) {
       if (!activeAlbum) return;
       const next = activePage + direction;
       if (next < 0 || next >= activeAlbum.photos.length) return;
+      pageTurnDirection = direction;
       activePage = next;
       renderBookPage();
     }
