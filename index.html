@@ -212,6 +212,57 @@ button:hover {
     border-radius: 16px;
   }
 } 
+  
+/* ===== DETALLES ROMÁNTICOS EXTRA ===== */
+
+/* Pequeños corazones en las esquinas */
+body::before,
+body::after {
+  position: fixed;
+  z-index: 5;
+  pointer-events: none;
+  font-size: 24px;
+  opacity: 0.55;
+  animation: corazonFlotante 4s ease-in-out infinite;
+}
+
+body::before {
+  content: "♡";
+  top: 18%;
+  left: 2%;
+  color: #d995b0;
+}
+
+body::after {
+  content: "✧";
+  right: 2%;
+  bottom: 14%;
+  color: #c5a6d9;
+  animation-delay: 1.5s;
+}
+
+/* Movimiento muy suave */
+@keyframes corazonFlotante {
+  0%, 100% {
+    transform: translateY(0) rotate(-5deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(5deg);
+  }
+}
+
+/* Un acabado delicado para las fotografías */
+img {
+  box-shadow: 0 4px 16px rgba(160, 112, 135, 0.08);
+}
+
+/* Evitar animaciones si la persona prefiere movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  body::before,
+  body::after {
+    animation: none;
+  }
+}
   </style>
 </head>
 <body>
