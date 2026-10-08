@@ -152,6 +152,66 @@
       .trip-image img { aspect-ratio: 5 / 4; }
       .album-grid { gap: 8px; }
     }
+ 
+/* ===== NUEVOS DETALLES ROMÁNTICOS ===== */
+
+/* Fondo suave con pequeños matices pastel */
+body {
+  background:
+    radial-gradient(ellipse at 10% 10%, rgba(255, 220, 232, 0.55), transparent 35%),
+    radial-gradient(ellipse at 90% 35%, rgba(226, 216, 255, 0.35), transparent 32%),
+    #fff8f5;
+}
+
+/* Selección de texto en rosa */
+::selection {
+  background: #f4c9d8;
+  color: #573746;
+}
+
+/* Tarjetas de recuerdos más delicadas */
+.card,
+.album,
+.memory,
+.photo-card {
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(130, 90, 110, 0.09);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Pequeño movimiento al pasar el ratón */
+.card:hover,
+.album:hover,
+.memory:hover,
+.photo-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(130, 90, 110, 0.15);
+}
+
+/* Fotografías con bordes suaves */
+img {
+  border-radius: 12px;
+}
+
+/* Botones pastel */
+button {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(180, 115, 145, 0.18);
+}
+
+/* Detalles más cómodos en pantallas pequeñas */
+@media (max-width: 600px) {
+  .card,
+  .album,
+  .memory,
+  .photo-card {
+    border-radius: 16px;
+  }
+} 
   </style>
 </head>
 <body>
