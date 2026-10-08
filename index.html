@@ -263,6 +263,80 @@ img {
     animation: none;
   }
 }
+  
+/* ===== EXPLOSION DE AMOR 💖 ===== */
+
+.decoracion-amor {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.adornito {
+  position: absolute;
+  display: block;
+  user-select: none;
+  animation: flotarAmor 5s ease-in-out infinite;
+  filter: drop-shadow(0 3px 5px rgba(190, 110, 150, 0.18));
+}
+
+/* Corazones grandes */
+.adornito.corazon {
+  font-size: clamp(30px, 4vw, 58px);
+}
+
+/* Flores y destellos */
+.adornito.flor {
+  font-size: clamp(28px, 3.5vw, 48px);
+}
+
+.adornito.brillo {
+  font-size: clamp(24px, 3vw, 40px);
+}
+
+/* Posiciones de los adornos */
+.amor-1 { left: 2%; top: 17%; animation-delay: 0s; }
+.amor-2 { right: 3%; top: 28%; animation-delay: 1s; }
+.amor-3 { left: 4%; top: 56%; animation-delay: 2s; }
+.amor-4 { right: 5%; top: 67%; animation-delay: .5s; }
+.amor-5 { left: 12%; top: 83%; animation-delay: 1.5s; }
+.amor-6 { right: 13%; top: 10%; animation-delay: 2.5s; }
+.amor-7 { left: 45%; top: 7%; animation-delay: .8s; }
+.amor-8 { right: 42%; top: 88%; animation-delay: 1.8s; }
+.amor-9 { left: 22%; top: 38%; animation-delay: 3s; }
+.amor-10 { right: 22%; top: 47%; animation-delay: 2.2s; }
+
+@keyframes flotarAmor {
+  0%, 100% {
+    transform: translateY(0) rotate(-8deg) scale(1);
+  }
+  50% {
+    transform: translateY(-16px) rotate(8deg) scale(1.08);
+  }
+}
+
+/* En móviles, reducir un poco los adornos */
+@media (max-width: 600px) {
+  .adornito.corazon { font-size: 30px; }
+  .adornito.flor { font-size: 27px; }
+  .adornito.brillo { font-size: 23px; }
+
+  .amor-7,
+  .amor-8,
+  .amor-9,
+  .amor-10 {
+    display: none;
+  }
+}
+
+/* Respetar la preferencia de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  .adornito {
+    animation: none;
+  }
+}
   </style>
 </head>
 <body>
@@ -448,5 +522,19 @@ img {
 
     mostrarViajes();
   </script>
+
+<!-- Decoración romántica flotante -->
+<div class="decoracion-amor" aria-hidden="true">
+  <span class="adornito corazon amor-1">💗</span>
+  <span class="adornito flor amor-2">🌸</span>
+  <span class="adornito corazon amor-3">💕</span>
+  <span class="adornito brillo amor-4">✨</span>
+  <span class="adornito flor amor-5">🌷</span>
+  <span class="adornito corazon amor-6">💖</span>
+  <span class="adornito brillo amor-7">⭐</span>
+  <span class="adornito corazon amor-8">💘</span>
+  <span class="adornito flor amor-9">🌼</span>
+  <span class="adornito corazon amor-10">🩷</span>
+</div>
 </body>
 </html>
