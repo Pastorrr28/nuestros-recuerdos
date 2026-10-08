@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#f8f1ed">
   <title>Nuestro Recuerdos ♡</title>
-  <meta name="description" content="Un pequeño universo para guardar nuestros viajes, nuestra historia y todos esos momentos que queremos recordar.">
+  <meta name="description" content="Un pequeño universo para guardar nuestros viajes y todos esos momentos que queremos recordar.">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,6 +26,7 @@
     }
 
     * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
 
     html {
       scroll-behavior: smooth;
@@ -398,100 +399,241 @@
     .book.sage { background: #b8c8b4; box-shadow: 5px 7px 0 #9eaf9a, 8px 11px 25px rgba(91,63,75,.13); }
     .book.cream { background: #d9c8ad; box-shadow: 5px 7px 0 #c7b392, 8px 11px 25px rgba(91,63,75,.13); }
 
-    /* Nuestra historia */
+    /* Álbum a pantalla completa, con aspecto de libro */
 
-    .story-section { background: var(--paper); }
+    body.book-open { overflow: hidden; }
 
-    .story-layout {
+    .book-screen {
+      position: fixed;
+      z-index: 200;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      overflow-y: auto;
+      background:
+        radial-gradient(ellipse at 50% 32%, rgba(255,255,255,.9), transparent 58%),
+        #f4ece8;
+      animation: bookScreenIn .35s ease both;
+    }
+
+    .book-screen.visible { display: flex; }
+
+    @keyframes bookScreenIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .book-screen-top {
       display: grid;
-      grid-template-columns: .9fr 1.1fr;
+      grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      gap: 9%;
+      gap: 16px;
+      padding: 20px 5%;
+      border-bottom: 1px solid rgba(203,177,185,.55);
     }
 
-    .story-image {
-      position: relative;
-      padding: 0 16px 18px 0;
+    .back-to-travels,
+    .book-screen-controls button {
+      border: 1px solid #dfcbd0;
+      padding: 10px 15px;
+      background: rgba(255,253,249,.72);
+      color: #725d68;
+      cursor: pointer;
+      transition: background .2s, transform .2s;
     }
 
-    .story-image img {
-      width: 100%;
-      height: 480px;
-      object-fit: cover;
-      border: 9px solid white;
-      box-shadow: var(--shadow);
-      transform: rotate(-2deg);
-    }
+    .back-to-travels:hover,
+    .book-screen-controls button:hover { background: white; transform: translateY(-1px); }
 
-    .story-image-note {
-      position: absolute;
-      right: -10px;
-      bottom: 30px;
-      padding: 15px 22px;
-      background: var(--lavender);
-      font-family: "Parisienne", cursive;
-      font-size: 1.6rem;
-      transform: rotate(3deg);
-    }
-
-    .story-copy h2 {
-      margin: 10px 0 18px;
-      font-size: clamp(3rem, 5vw, 4.8rem);
-      font-weight: 500;
-      line-height: .97;
-    }
-
-    .story-copy > p {
-      color: #857780;
-      font-size: .91rem;
-    }
-
-    .timeline {
-      position: relative;
-      margin-top: 33px;
-      padding-left: 25px;
-      border-left: 1px solid #d9bac7;
-    }
-
-    .timeline-item {
-      position: relative;
-      padding: 0 0 24px 10px;
-    }
-
-    .timeline-item:last-child { padding-bottom: 0; }
-
-    .timeline-item::before {
-      position: absolute;
-      top: 7px;
-      left: -31px;
-      width: 11px;
-      height: 11px;
-      border: 2px solid #c38e9f;
-      border-radius: 50%;
-      background: white;
-      content: "";
-    }
-
-    .timeline-item time {
-      color: #b17d8d;
-      font-size: .68rem;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-    }
-
-    .timeline-item h3 {
-      margin: 4px 0;
+    .book-screen-brand {
       font-family: "Cormorant Garamond", serif;
-      font-size: 1.55rem;
-      font-weight: 600;
-      line-height: 1.1;
+      font-size: 1.2rem;
+      text-align: center;
+      white-space: nowrap;
     }
 
-    .timeline-item p {
-      margin: 5px 0 0;
-      color: #8c7d84;
-      font-size: .8rem;
+    .book-screen-brand span,
+    .book-screen-bottom > p span { color: #b98494; }
+
+    .book-screen-counter {
+      justify-self: end;
+      color: #927d87;
+      font-size: .75rem;
+      font-variant-numeric: tabular-nums;
     }
+
+    .book-screen-heading {
+      padding: 28px 20px 8px;
+      text-align: center;
+    }
+
+    .book-screen-heading h2 {
+      margin: 5px 0;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 500;
+      line-height: 1;
+    }
+
+    .book-screen-heading p {
+      margin: 9px auto 0;
+      color: #8b7a82;
+      font-size: .85rem;
+    }
+
+    .reading-area {
+      display: grid;
+      grid-template-columns: minmax(38px, 70px) minmax(0, 860px) minmax(38px, 70px);
+      align-items: center;
+      justify-content: center;
+      gap: clamp(8px, 2vw, 28px);
+      flex: 1;
+      width: 100%;
+      padding: 18px 3% 10px;
+    }
+
+    .page-arrow {
+      display: grid;
+      place-items: center;
+      width: 52px;
+      height: 52px;
+      justify-self: center;
+      border: 1px solid #e0ccd1;
+      border-radius: 50%;
+      background: rgba(255,253,249,.8);
+      color: #9f7182;
+      cursor: pointer;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 2.4rem;
+      line-height: 1;
+      transition: background .2s, transform .2s;
+    }
+
+    .page-arrow:hover:not(:disabled) { background: white; transform: scale(1.06); }
+    .page-arrow:disabled { opacity: .25; cursor: default; }
+
+    .open-book {
+      position: relative;
+      min-width: 0;
+      padding: 13px;
+      background: #e2d1c5;
+      box-shadow: 0 22px 60px rgba(90,65,75,.17), 0 2px 5px rgba(90,65,75,.08);
+      transform-origin: center;
+      animation: pageTurn .32s ease;
+    }
+
+    @keyframes pageTurn {
+      from { opacity: .45; transform: perspective(1200px) rotateY(3deg) translateX(5px); }
+      to { opacity: 1; transform: perspective(1200px) rotateY(0) translateX(0); }
+    }
+
+    .book-page {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 190px;
+      min-height: 0;
+      background: #fffdf8;
+      border: 1px solid rgba(255,255,255,.9);
+      box-shadow: inset 0 0 20px rgba(151,119,108,.05);
+    }
+
+    .page-image-wrap {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-width: 0;
+      min-height: 300px;
+      overflow: hidden;
+      background: #eee5e2;
+    }
+
+    .page-image-wrap img,
+    .page-image-wrap video {
+      display: block;
+      width: 100%;
+      height: clamp(300px, 49vh, 520px);
+      object-fit: contain;
+      background: #e9e0dd;
+    }
+
+    .page-image-wrap img { object-fit: cover; }
+    .page-image-wrap video { object-fit: contain; }
+
+    .video-placeholder {
+      padding: 30px;
+      color: #927c89;
+      text-align: center;
+    }
+
+    .page-caption {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 26px 23px;
+      border-left: 1px solid #eee2df;
+      background:
+        repeating-linear-gradient(to bottom, transparent 0, transparent 31px, rgba(211,190,190,.25) 32px),
+        #fffdf8;
+    }
+
+    .page-number {
+      color: #bd8e9c;
+      font-size: .68rem;
+      letter-spacing: .16em;
+    }
+
+    .page-caption p {
+      margin: 14px 0 0;
+      color: #77646f;
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(1.45rem, 2.5vw, 2rem);
+      font-style: italic;
+      line-height: 1.2;
+      overflow-wrap: anywhere;
+    }
+
+    .book-screen-bottom {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 18px;
+      padding: 12px 5% 20px;
+    }
+
+    .page-dots {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .page-dot {
+      width: 7px;
+      height: 7px;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: #d5c1c8;
+      cursor: pointer;
+    }
+
+    .page-dot.active { background: #a97183; transform: scale(1.35); }
+
+    .book-screen-bottom > p {
+      margin: 0;
+      color: #98838e;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.05rem;
+      font-style: italic;
+      white-space: nowrap;
+    }
+
+    .book-screen-controls {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .book-screen-controls button { padding: 8px 11px; font-size: .75rem; }
 
     /* Cierre */
 
@@ -536,176 +678,6 @@
       font-size: 1.25rem;
     }
 
-    /* Modal del álbum */
-
-    .modal {
-      position: fixed;
-      z-index: 100;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 22px;
-      background: rgba(47, 35, 44, .57);
-      backdrop-filter: blur(8px);
-    }
-
-    .modal.visible { display: flex; }
-
-    .modal-panel {
-      position: relative;
-      width: min(100%, 1050px);
-      max-height: 92vh;
-      overflow: auto;
-      padding: clamp(20px, 4vw, 45px);
-      background: var(--paper);
-      box-shadow: 0 30px 100px rgba(30, 20, 30, .25);
-      animation: arrive .3s ease both;
-    }
-
-    @keyframes arrive {
-      from { opacity: 0; transform: translateY(12px) scale(.99); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 15px;
-      right: 18px;
-      z-index: 3;
-      display: grid;
-      width: 40px;
-      height: 40px;
-      place-items: center;
-      border: 1px solid var(--line);
-      border-radius: 50%;
-      background: white;
-      color: var(--ink);
-      cursor: pointer;
-      font-size: 1.3rem;
-    }
-
-    .modal-header { padding-right: 40px; }
-
-    .modal-header h2 {
-      margin: 7px 0;
-      font-size: clamp(2.8rem, 6vw, 4.6rem);
-      font-weight: 500;
-      line-height: 1;
-    }
-
-    .modal-header p {
-      margin: 12px 0 25px;
-      color: var(--muted);
-      font-size: .87rem;
-    }
-
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .gallery-item {
-      position: relative;
-      min-width: 0;
-      min-height: 150px;
-      overflow: hidden;
-      padding: 0;
-      border: 0;
-      background: #eee5e7;
-      cursor: pointer;
-    }
-
-    .gallery-item img,
-    .gallery-item video {
-      display: block;
-      width: 100%;
-      height: 220px;
-      object-fit: cover;
-      transition: transform .35s;
-    }
-
-    .gallery-item:hover img { transform: scale(1.04); }
-
-    .gallery-item.video-item::after {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      display: grid;
-      width: 45px;
-      height: 45px;
-      place-items: center;
-      border: 1px solid rgba(255,255,255,.8);
-      border-radius: 50%;
-      background: rgba(63,43,57,.5);
-      color: white;
-      content: "▶";
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-    }
-
-    .gallery-caption {
-      padding: 9px 10px;
-      background: #f8f1f1;
-      color: #84717c;
-      font-family: "Cormorant Garamond", serif;
-      font-size: 1.12rem;
-      text-align: left;
-    }
-
-    .empty-hint {
-      margin-top: 25px;
-      padding: 17px;
-      border: 1px dashed #d9c5cf;
-      color: #927c89;
-      font-size: .8rem;
-      text-align: center;
-    }
-
-    /* Visor de fotografía */
-
-    .lightbox {
-      position: fixed;
-      z-index: 120;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 30px;
-      background: rgba(24, 18, 25, .92);
-    }
-
-    .lightbox.visible { display: flex; }
-
-    .lightbox img {
-      max-width: min(100%, 1200px);
-      max-height: 82vh;
-      object-fit: contain;
-    }
-
-    .lightbox-close {
-      position: absolute;
-      top: 20px;
-      right: 24px;
-      padding: 10px 15px;
-      border: 1px solid rgba(255,255,255,.35);
-      background: transparent;
-      color: white;
-      cursor: pointer;
-      font-size: 1.4rem;
-    }
-
-    .lightbox-caption {
-      position: absolute;
-      right: 20px;
-      bottom: 18px;
-      left: 20px;
-      color: white;
-      text-align: center;
-      font-size: .85rem;
-    }
-
     .fade-in {
       opacity: 0;
       transform: translateY(16px);
@@ -735,8 +707,6 @@
       .section { padding: 80px 6%; }
       .album-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 35px 22px; }
       .book { height: 310px; }
-      .story-layout { gap: 6%; }
-      .story-image img { height: 400px; }
     }
 
     @media (max-width: 620px) {
@@ -771,20 +741,27 @@
       .album-info p { font-size: .7rem; }
       .album-arrow { font-size: 1rem; }
 
-      .story-layout { grid-template-columns: 1fr; gap: 42px; }
-      .story-image { width: 87%; margin: auto; }
-      .story-image img { height: 390px; }
-      .story-copy h2 { font-size: 3.8rem; }
-
       .closing { padding: 75px 7%; }
       footer { padding: 22px 6%; }
 
-      .modal { padding: 8px; }
-      .modal-panel { max-height: 95vh; padding: 27px 16px; }
-      .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-      .gallery-item img, .gallery-item video { height: 165px; }
-      .gallery-caption { font-size: 1rem; }
-      .lightbox { padding: 12px; }
+      .book-screen-top { grid-template-columns: 1fr auto; padding: 12px 4%; }
+      .book-screen-brand { display: none; }
+      .back-to-travels { padding: 9px 10px; font-size: .72rem; }
+      .book-screen-heading { padding: 22px 16px 5px; }
+      .book-screen-heading h2 { font-size: 2.6rem; }
+      .book-screen-heading p { font-size: .77rem; }
+      .reading-area { grid-template-columns: 34px minmax(0, 1fr) 34px; gap: 5px; padding: 12px 2% 5px; }
+      .page-arrow { width: 32px; height: 32px; font-size: 1.7rem; }
+      .open-book { padding: 7px; }
+      .book-page { grid-template-columns: minmax(0, 1fr); }
+      .page-image-wrap { min-height: 0; }
+      .page-image-wrap img, .page-image-wrap video { height: min(49vh, 430px); min-height: 230px; }
+      .page-caption { padding: 12px 15px 15px; border-left: 0; border-top: 1px solid #eee2df; }
+      .page-caption p { margin-top: 5px; font-size: 1.45rem; }
+      .book-screen-bottom { grid-template-columns: 1fr; justify-items: center; gap: 10px; padding: 8px 4% 15px; }
+      .page-dots { justify-content: center; }
+      .book-screen-bottom > p { display: none; }
+      .book-screen-controls { justify-content: center; }
     }
 
     @media (max-width: 370px) {
@@ -802,7 +779,6 @@
     <a href="#inicio" class="brand">Nuestro <span>Recuerdos ♡</span></a>
     <div class="nav-links">
       <a href="#viajes">Los viajes</a>
-      <a href="#historia">Nuestra historia</a>
       <a href="#final">Para ti</a>
     </div>
   </nav>
@@ -854,36 +830,6 @@
       <div class="album-grid" id="albumGrid"></div>
     </section>
 
-    <section class="section story-section" id="historia">
-      <div class="story-layout">
-        <div class="story-image fade-in">
-          <img
-            src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=1000&q=85"
-            alt="Un recuerdo romántico"
-            loading="lazy"
-          >
-          <div class="story-image-note">Lo mejor está por venir ♡</div>
-        </div>
-
-        <div class="story-copy fade-in">
-          <span class="eyebrow">Antes, durante y todo lo que vendrá</span>
-          <h2 class="serif">Y así comenzó<br>lo nuestro.</h2>
-          <p>
-            No todo lo importante ocurre lejos de casa. A veces, los recuerdos
-            más bonitos nacen en un día cualquiera, en una conversación que
-            se alarga o en una mirada que lo cambia todo.
-          </p>
-          <p>
-            Este espacio es para esos momentos también. Para recordar de dónde
-            venimos, celebrar lo que somos y dejar un hueco para todo lo que
-            todavía nos queda por vivir.
-          </p>
-
-          <div class="timeline" id="timeline"></div>
-        </div>
-      </div>
-    </section>
-
     <section class="closing" id="final">
       <span class="script">Para mi persona favorita</span>
       <h2 class="serif">Esto es solo<br>el comienzo.</h2>
@@ -901,28 +847,47 @@
     <span class="script">Tú + yo ♡</span>
   </footer>
 
-  <!-- Ventana que contiene cada álbum -->
-  <div class="modal" id="albumModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    <div class="modal-panel">
-      <button class="modal-close" id="closeModal" aria-label="Cerrar álbum">×</button>
-      <div class="modal-header">
-        <span class="eyebrow" id="modalDate"></span>
-        <h2 class="serif" id="modalTitle">Nuestro viaje</h2>
-        <p id="modalDescription"></p>
-      </div>
-      <div class="gallery" id="gallery"></div>
-      <div class="empty-hint">
-        Este álbum está esperando nuestras fotos y vídeos reales. ♡
+  <!-- Pantalla completa para leer cada álbum como un libro -->
+  <section class="book-screen" id="bookScreen" aria-label="Álbum de viaje" aria-hidden="true">
+    <header class="book-screen-top">
+      <button class="back-to-travels" id="backToTravels" type="button">← Volver a los viajes</button>
+      <div class="book-screen-brand">Nuestro Recuerdos <span>♡</span></div>
+      <div class="book-screen-counter" id="pageCounter">1 / 1</div>
+    </header>
+
+    <div class="book-screen-heading">
+      <span class="eyebrow" id="bookDate"></span>
+      <h2 class="serif" id="bookTitle">Nuestro viaje</h2>
+      <p id="bookDescription"></p>
+    </div>
+
+    <div class="reading-area">
+      <button class="page-arrow page-previous" id="previousPage" type="button" aria-label="Página anterior">‹</button>
+      <article class="open-book" id="openBook" aria-live="polite">
+        <div class="book-page">
+          <div class="page-image-wrap" id="pageImageWrap">
+            <img id="pageImage" src="" alt="">
+            <video id="pageVideo" controls playsinline preload="metadata" hidden></video>
+            <div class="video-placeholder" id="videoPlaceholder" hidden>Vídeo de nuestro recuerdo</div>
+          </div>
+          <div class="page-caption">
+            <span class="page-number" id="printedPageNumber">01</span>
+            <p id="pageCaption"></p>
+          </div>
+        </div>
+      </article>
+      <button class="page-arrow page-next" id="nextPage" type="button" aria-label="Página siguiente">›</button>
+    </div>
+
+    <div class="book-screen-bottom">
+      <div class="page-dots" id="pageDots" aria-label="Páginas del álbum"></div>
+      <p>Un recuerdo a la vez. <span>♡</span></p>
+      <div class="book-screen-controls">
+        <button id="previousPageBottom" type="button">← Anterior</button>
+        <button id="nextPageBottom" type="button">Siguiente →</button>
       </div>
     </div>
-  </div>
-
-  <!-- Visor para ampliar las fotografías -->
-  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Fotografía ampliada">
-    <button class="lightbox-close" id="closeLightbox" aria-label="Cerrar fotografía">×</button>
-    <img id="lightboxImage" src="" alt="">
-    <div class="lightbox-caption" id="lightboxCaption"></div>
-  </div>
+  </section>
 
   <script>
     /*
@@ -1090,12 +1055,17 @@
     ];
 
     const albumGrid = document.getElementById("albumGrid");
-    const modal = document.getElementById("albumModal");
-    const gallery = document.getElementById("gallery");
-    const lightbox = document.getElementById("lightbox");
+    const bookScreen = document.getElementById("bookScreen");
+    const pageImage = document.getElementById("pageImage");
+    const pageVideo = document.getElementById("pageVideo");
+    const pageCaption = document.getElementById("pageCaption");
+    const pageCounter = document.getElementById("pageCounter");
+    const pageDots = document.getElementById("pageDots");
+    let activeAlbum = null;
+    let activePage = 0;
 
     function renderAlbums() {
-      albumGrid.innerHTML = albums.map((album, index) => `
+      albumGrid.innerHTML = albums.map(album => `
         <button class="album-card fade-in" type="button"
           data-album="${album.id}" aria-label="Abrir álbum: ${album.title}">
           <div class="book ${album.color || ""}">
@@ -1118,106 +1088,115 @@
       `).join("");
 
       albumGrid.querySelectorAll("[data-album]").forEach(button => {
-        button.addEventListener("click", () => {
-          openAlbum(button.dataset.album);
-        });
+        button.addEventListener("click", () => openAlbum(button.dataset.album));
       });
 
       observeFadeIns();
     }
 
-    function renderTimeline() {
-      const timeline = document.getElementById("timeline");
-      timeline.innerHTML = memories.map(memory => `
-        <article class="timeline-item">
-          <time>${memory.date}</time>
-          <h3>${memory.title}</h3>
-          <p>${memory.description}</p>
-        </article>
-      `).join("");
+    function openAlbum(id) {
+      activeAlbum = albums.find(item => item.id === id);
+      if (!activeAlbum) return;
+
+      activePage = 0;
+      document.getElementById("bookDate").textContent = activeAlbum.date;
+      document.getElementById("bookTitle").textContent = activeAlbum.title;
+      document.getElementById("bookDescription").textContent =
+        activeAlbum.description + " · " + activeAlbum.location;
+
+      bookScreen.classList.add("visible");
+      bookScreen.setAttribute("aria-hidden", "false");
+      document.body.classList.add("book-open");
+      renderBookPage();
+      document.getElementById("backToTravels").focus();
     }
 
-    function openAlbum(id) {
-      const album = albums.find(item => item.id === id);
-      if (!album) return;
+    function renderBookPage() {
+      if (!activeAlbum || !activeAlbum.photos.length) return;
 
-      document.getElementById("modalDate").textContent = album.date;
-      document.getElementById("modalTitle").textContent = album.title;
-      document.getElementById("modalDescription").textContent =
-        album.description + " · " + album.location;
+      const photo = activeAlbum.photos[activePage];
+      const total = activeAlbum.photos.length;
+      const isVideo = photo.type === "video";
 
-      gallery.innerHTML = album.photos.map((photo, index) => {
-        if (photo.type === "video") {
-          return `
-            <div class="gallery-item video-item">
-              <video controls preload="metadata" playsinline
-                aria-label="${photo.caption}"
-                poster="${photo.poster || album.cover}">
-                <source src="${photo.src}" type="video/mp4">
-                Tu navegador no puede reproducir este vídeo.
-              </video>
-              <div class="gallery-caption">${photo.caption}</div>
-            </div>
-          `;
-        }
+      pageImage.hidden = isVideo;
+      pageVideo.hidden = !isVideo;
+      document.getElementById("videoPlaceholder").hidden = true;
 
-        return `
-          <button class="gallery-item" type="button"
-            data-photo="${index}" aria-label="Ampliar: ${photo.caption}">
-            <img src="${photo.src}" alt="${photo.caption}" loading="lazy">
-            <div class="gallery-caption">${photo.caption}</div>
-          </button>
-        `;
-      }).join("");
+      if (isVideo) {
+        pageImage.removeAttribute("src");
+        pageVideo.pause();
+        pageVideo.innerHTML = `<source src="${photo.src}" type="video/mp4">Tu navegador no puede reproducir este vídeo.`;
+        pageVideo.load();
+        pageVideo.setAttribute("aria-label", photo.caption || "Vídeo del viaje");
+      } else {
+        pageVideo.pause();
+        pageVideo.removeAttribute("src");
+        pageVideo.innerHTML = "";
+        pageImage.src = photo.src;
+        pageImage.alt = photo.caption || activeAlbum.title;
+      }
 
-      gallery.querySelectorAll("[data-photo]").forEach(button => {
-        button.addEventListener("click", () => {
-          const photo = album.photos[Number(button.dataset.photo)];
-          openLightbox(photo.src, photo.caption);
+      pageCaption.textContent = photo.caption || "";
+      document.getElementById("printedPageNumber").textContent =
+        String(activePage + 1).padStart(2, "0");
+      pageCounter.textContent = `${activePage + 1} / ${total}`;
+
+      document.getElementById("previousPage").disabled = activePage === 0;
+      document.getElementById("previousPageBottom").disabled = activePage === 0;
+      document.getElementById("nextPage").disabled = activePage === total - 1;
+      document.getElementById("nextPageBottom").disabled = activePage === total - 1;
+
+      pageDots.innerHTML = activeAlbum.photos.map((item, index) => `
+        <button class="page-dot ${index === activePage ? "active" : ""}"
+          type="button" data-page="${index}"
+          aria-label="Ir a la página ${index + 1}"
+          aria-current="${index === activePage ? "page" : "false"}"></button>
+      `).join("");
+
+      pageDots.querySelectorAll("[data-page]").forEach(dot => {
+        dot.addEventListener("click", () => {
+          activePage = Number(dot.dataset.page);
+          renderBookPage();
         });
       });
 
-      modal.classList.add("visible");
-      document.body.classList.add("modal-open");
-      document.getElementById("closeModal").focus();
+      const openBook = document.getElementById("openBook");
+      openBook.style.animation = "none";
+      void openBook.offsetWidth;
+      openBook.style.animation = "";
+    }
+
+    function changePage(direction) {
+      if (!activeAlbum) return;
+      const next = activePage + direction;
+      if (next < 0 || next >= activeAlbum.photos.length) return;
+      activePage = next;
+      renderBookPage();
     }
 
     function closeAlbum() {
-      modal.classList.remove("visible");
-      document.body.classList.remove("modal-open");
+      if (pageVideo) {
+        pageVideo.pause();
+        pageVideo.removeAttribute("src");
+        pageVideo.innerHTML = "";
+      }
+      bookScreen.classList.remove("visible");
+      bookScreen.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("book-open");
+      activeAlbum = null;
     }
 
-    function openLightbox(src, caption) {
-      document.getElementById("lightboxImage").src = src;
-      document.getElementById("lightboxImage").alt = caption;
-      document.getElementById("lightboxCaption").textContent = caption;
-      lightbox.classList.add("visible");
-    }
-
-    function closeLightbox() {
-      lightbox.classList.remove("visible");
-      document.getElementById("lightboxImage").src = "";
-    }
-
-    document.getElementById("closeModal").addEventListener("click", closeAlbum);
-    document.getElementById("closeLightbox").addEventListener("click", closeLightbox);
-
-    modal.addEventListener("click", event => {
-      if (event.target === modal) closeAlbum();
-    });
-
-    lightbox.addEventListener("click", event => {
-      if (event.target === lightbox) closeLightbox();
-    });
+    document.getElementById("backToTravels").addEventListener("click", closeAlbum);
+    document.getElementById("previousPage").addEventListener("click", () => changePage(-1));
+    document.getElementById("previousPageBottom").addEventListener("click", () => changePage(-1));
+    document.getElementById("nextPage").addEventListener("click", () => changePage(1));
+    document.getElementById("nextPageBottom").addEventListener("click", () => changePage(1));
 
     document.addEventListener("keydown", event => {
-      if (event.key === "Escape") {
-        if (lightbox.classList.contains("visible")) {
-          closeLightbox();
-        } else if (modal.classList.contains("visible")) {
-          closeAlbum();
-        }
-      }
+      if (!bookScreen.classList.contains("visible")) return;
+      if (event.key === "Escape") closeAlbum();
+      if (event.key === "ArrowLeft") changePage(-1);
+      if (event.key === "ArrowRight") changePage(1);
     });
 
     let fadeObserver;
@@ -1247,7 +1226,6 @@
     }
 
     renderAlbums();
-    renderTimeline();
     observeFadeIns();
   </script>
 </body>
