@@ -998,6 +998,9 @@
         #f3ece5;
     }
     .page-image-wrap img:not([hidden]) {
+      opacity: 1;
+      transition: opacity .14s ease, transform .35s ease, box-shadow .35s ease;
+      will-change: opacity, transform;
       width: min(92%, 650px);
       height: min(68vh, 650px);
       min-height: 320px;
@@ -1227,7 +1230,37 @@
     let activeAlbum = null;
     let activePage = 0;
     let pageTurnDirection = 0;
-    let pageRenderToken = 0;
+    let photoRenderToken = 0;
+    const preloadedPhotos = new Map();
+
+    // Descarga y decodifica la foto antes de mostrarla para evitar el pequeño salto.
+    function preloadPhoto(src) {
+      if (!src) return Promise.resolve(null);
+      if (preloadedPhotos.has(src)) return preloadedPhotos.get(src);
+      const promise = new Promise(resolve => {
+        const image = new Image();
+        image.onload = async () => {
+          try { if (image.decode) await image.decode(); } catch (_) {}
+          resolve(image);
+        };
+        image.onerror = () => resolve(null);
+        image.src = src;
+        if (image.complete && image.naturalWidth) {
+          if (image.decode) image.decode().catch(() => {}).finally(() => resolve(image));
+          else resolve(image);
+        }
+      });
+      preloadedPhotos.set(src, promise);
+      return promise;
+    }
+
+    function preloadNearbyPhotos() {
+      if (!activeAlbum) return;
+      [-1, 1, -2, 2].forEach(offset => {
+        const item = activeAlbum.photos[activePage + offset];
+        if (item && item.type !== 'video') preloadPhoto(item.src);
+      });
+    }
 
     function renderAlbums() {
       albumGrid.innerHTML = albums.map(album => `
@@ -1264,6 +1297,7 @@
       if (!activeAlbum) return;
 
       activePage = 0;
+      photoRenderToken++;
       document.getElementById("bookDate").textContent = activeAlbum.date;
       document.getElementById("bookTitle").textContent = activeAlbum.title;
       document.getElementById("bookDescription").textContent =
@@ -1279,9 +1313,7 @@
     function renderBookPage() {
       if (!activeAlbum || !activeAlbum.photos.length) return;
 
-      const renderToken = ++pageRenderToken;
       const photo = activeAlbum.photos[activePage];
-      const pageToRender = activePage;
       const total = activeAlbum.photos.length;
       const isVideo = photo.type === "video";
 
@@ -1299,21 +1331,20 @@
         pageVideo.pause();
         pageVideo.removeAttribute("src");
         pageVideo.innerHTML = "";
+        const renderToken = ++photoRenderToken;
+        const requestedSrc = photo.src;
         pageImage.alt = photo.caption || activeAlbum.title;
-        // Precarga la foto antes de mostrarla. Si se pulsa «siguiente» varias
-        // veces, solo se pinta la última página solicitada cuando esté lista.
-        const imageToLoad = new Image();
-        imageToLoad.onload = () => {
-          if (renderToken !== pageRenderToken || pageToRender !== activePage) return;
-          pageImage.src = imageToLoad.src;
-          pageImage.alt = photo.caption || activeAlbum.title;
-        };
-        imageToLoad.onerror = () => {
-          if (renderToken !== pageRenderToken || pageToRender !== activePage) return;
-          pageImage.src = photo.src;
-          pageImage.alt = (photo.caption || activeAlbum.title) + " (no se pudo precargar la imagen)";
-        };
-        imageToLoad.src = photo.src;
+        preloadPhoto(requestedSrc).then(readyImage => {
+          // Si se ha pulsado otra página mientras cargaba, ignoramos esta respuesta.
+          if (!readyImage || renderToken !== photoRenderToken || !activeAlbum || activeAlbum.photos[activePage]?.src !== requestedSrc) return;
+          pageImage.style.opacity = "0";
+          requestAnimationFrame(() => {
+            pageImage.src = requestedSrc;
+            const reveal = () => requestAnimationFrame(() => { pageImage.style.opacity = "1"; });
+            if (pageImage.complete && pageImage.naturalWidth) reveal();
+            else pageImage.onload = reveal;
+          });
+        });
       }
 
       pageCaption.textContent = photo.caption || "";
@@ -1350,6 +1381,7 @@
         openBook.classList.add(pageTurnDirection > 0 ? "turn-forward" : "turn-backward");
       }
       pageTurnDirection = 0;
+      preloadNearbyPhotos();
     }
 
     function changePage(direction) {
