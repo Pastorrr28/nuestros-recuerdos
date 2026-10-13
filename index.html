@@ -1227,6 +1227,7 @@
     let activeAlbum = null;
     let activePage = 0;
     let pageTurnDirection = 0;
+    let pageRenderToken = 0;
 
     function renderAlbums() {
       albumGrid.innerHTML = albums.map(album => `
@@ -1278,7 +1279,9 @@
     function renderBookPage() {
       if (!activeAlbum || !activeAlbum.photos.length) return;
 
+      const renderToken = ++pageRenderToken;
       const photo = activeAlbum.photos[activePage];
+      const pageToRender = activePage;
       const total = activeAlbum.photos.length;
       const isVideo = photo.type === "video";
 
@@ -1296,8 +1299,21 @@
         pageVideo.pause();
         pageVideo.removeAttribute("src");
         pageVideo.innerHTML = "";
-        pageImage.src = photo.src;
         pageImage.alt = photo.caption || activeAlbum.title;
+        // Precarga la foto antes de mostrarla. Si se pulsa «siguiente» varias
+        // veces, solo se pinta la última página solicitada cuando esté lista.
+        const imageToLoad = new Image();
+        imageToLoad.onload = () => {
+          if (renderToken !== pageRenderToken || pageToRender !== activePage) return;
+          pageImage.src = imageToLoad.src;
+          pageImage.alt = photo.caption || activeAlbum.title;
+        };
+        imageToLoad.onerror = () => {
+          if (renderToken !== pageRenderToken || pageToRender !== activePage) return;
+          pageImage.src = photo.src;
+          pageImage.alt = (photo.caption || activeAlbum.title) + " (no se pudo precargar la imagen)";
+        };
+        imageToLoad.src = photo.src;
       }
 
       pageCaption.textContent = photo.caption || "";
