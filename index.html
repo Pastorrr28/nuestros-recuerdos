@@ -1194,6 +1194,16 @@
           { src: "IMG_1773.JPG", caption: "" },
           { src: "IMG_1813.JPG", caption: "" }
         ]
+      },
+      {
+        id: "budapest",
+        title: "Budapest",
+        location: "Budapest",
+        date: "Budapest",
+        description: "Este álbum está esperando sus primeras fotografías.",
+        cover: "Budapest.png",
+        color: "",
+        photos: []
       }
     ];
 
@@ -1311,7 +1321,22 @@
     }
 
     function renderBookPage() {
-      if (!activeAlbum || !activeAlbum.photos.length) return;
+      if (!activeAlbum) return;
+      if (!activeAlbum.photos.length) {
+        pageImage.hidden = true;
+        pageVideo.hidden = true;
+        document.getElementById("videoPlaceholder").hidden = false;
+        document.getElementById("videoPlaceholder").textContent = "Este álbum está esperando sus primeras fotografías. 💗";
+        pageCaption.textContent = "";
+        document.getElementById("printedPageNumber").textContent = "♡";
+        pageCounter.textContent = "Álbum vacío";
+        document.getElementById("previousPage").disabled = true;
+        document.getElementById("previousPageBottom").disabled = true;
+        document.getElementById("nextPage").disabled = true;
+        document.getElementById("nextPageBottom").disabled = true;
+        pageDots.innerHTML = "";
+        return;
+      }
 
       const photo = activeAlbum.photos[activePage];
       const total = activeAlbum.photos.length;
@@ -1449,5 +1474,3 @@
   </script>
 </body>
 </html>
-
-
