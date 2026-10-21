@@ -1322,9 +1322,37 @@
     }
 
     function renderBookPage() {
-      if (!activeAlbum || !activeAlbum.photos.length) return;
+  if (!activeAlbum) return;
 
-      const photo = activeAlbum.photos[activePage];
+  // Álbum vacío
+  if (!activeAlbum.photos.length) {
+    pageImage.hidden = true;
+    pageImage.removeAttribute("src");
+
+    pageVideo.hidden = true;
+    pageVideo.pause();
+    pageVideo.removeAttribute("src");
+    pageVideo.innerHTML = "";
+
+    document.getElementById("videoPlaceholder").hidden = false;
+    document.getElementById("videoPlaceholder").textContent =
+      "Este álbum todavía está vacío ♡";
+
+    pageCaption.textContent = "";
+    document.getElementById("printedPageNumber").textContent = "—";
+    pageCounter.textContent = "0 / 0";
+
+    document.getElementById("previousPage").disabled = true;
+    document.getElementById("previousPageBottom").disabled = true;
+    document.getElementById("nextPage").disabled = true;
+    document.getElementById("nextPageBottom").disabled = true;
+
+    pageDots.innerHTML = "";
+
+    return;
+  }
+
+  const photo = activeAlbum.photos[activePage];
       const total = activeAlbum.photos.length;
       const isVideo = photo.type === "video";
 
