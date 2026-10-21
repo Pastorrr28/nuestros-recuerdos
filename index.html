@@ -522,14 +522,14 @@
 
     /* La página entra girando ligeramente, como al hojear un álbum real. */
     .open-book.turn-forward .book-page {
-      transform-origin: left center;
-      animation: pageFlipForward .48s cubic-bezier(.22,.68,.2,1) both;
-    }
+  transform-origin: left center;
+  animation: pageFlipForward .18s ease-out both;
+}
 
-    .open-book.turn-backward .book-page {
-      transform-origin: right center;
-      animation: pageFlipBackward .48s cubic-bezier(.22,.68,.2,1) both;
-    }
+.open-book.turn-backward .book-page {
+  transform-origin: right center;
+  animation: pageFlipBackward .18s ease-out both;
+}
 
     @keyframes pageFlipForward {
       0% { opacity: .45; transform: rotateY(-9deg) translateX(10px); filter: brightness(.96); }
@@ -1321,8 +1321,161 @@
       document.getElementById("backToTravels").focus();
     }
 
-    function renderBookPage() {
+   
+function renderBookPage() {
   if (!activeAlbum) return;
+
+  const renderToken = ++photoRenderToken;
+  const album = activeAlbum;
+  const total = album.photos.length;
+  const placeholder = document.getElementById("videoPlaceholder");
+  const openBook = document.getElementById("openBook");
+
+  // Si el álbum está vacío, borrar por completo el contenido anterior.
+  if (total === 0) {
+    pageImage.onload = null;
+    pageImage.onerror = null;
+    pageImage.style.opacity = "0";
+    pageImage.hidden = true;
+    pageImage.removeAttribute("src");
+
+    pageVideo.pause();
+    pageVideo.removeAttribute("src");
+    pageVideo.innerHTML = "";
+    pageVideo.hidden = true;
+
+    placeholder.hidden = false;
+    placeholder.textContent = "Este álbum todavía está vacío ♡";
+
+    pageCaption.textContent = "";
+    document.getElementById("printedPageNumber").textContent = "—";
+    pageCounter.textContent = "0 / 0";
+
+    document.getElementById("previousPage").disabled = true;
+    document.getElementById("previousPageBottom").disabled = true;
+    document.getElementById("nextPage").disabled = true;
+    document.getElementById("nextPageBottom").disabled = true;
+
+    pageDots.innerHTML = "";
+    openBook.classList.remove("turn-forward", "turn-backward");
+
+    return;
+  }
+
+  // Asegurar que el índice siempre corresponda a una foto válida.
+  activePage = Math.max(0, Math.min(activePage, total - 1));
+
+  const photo = album.photos[activePage];
+  const isVideo = photo.type === "video";
+
+  pageImage.onload = null;
+  pageImage.onerror = null;
+  pageImage.style.opacity = "1";
+
+  pageImage.hidden = isVideo;
+  pageVideo.hidden = !isVideo;
+  placeholder.hidden = true;
+
+  if (isVideo) {
+    pageImage.removeAttribute("src");
+
+    pageVideo.pause();
+    pageVideo.removeAttribute("src");
+    pageVideo.innerHTML =
+      `<source src="${photo.src}" type="video/mp4">` +
+      "Tu navegador no puede reproducir este vídeo.";
+
+    pageVideo.load();
+    pageVideo.setAttribute(
+      "aria-label",
+      photo.caption || "Vídeo del viaje"
+    );
+  } else {
+    pageVideo.pause();
+    pageVideo.removeAttribute("src");
+    pageVideo.innerHTML = "";
+
+    const requestedSrc = photo.src;
+    pageImage.alt = photo.caption || album.title;
+
+    // Mostrar la última foto solicitada en cuanto esté preparada.
+    preloadPhoto(requestedSrc).then(readyImage => {
+      if (
+        !readyImage ||
+        renderToken !== photoRenderToken ||
+        activeAlbum !== album ||
+        album.photos[activePage]?.src !== requestedSrc
+      ) {
+        return;
+      }
+
+      pageImage.onload = null;
+      pageImage.onerror = null;
+      pageImage.src = requestedSrc;
+
+      if (pageImage.complete && pageImage.naturalWidth > 0) {
+        pageImage.style.opacity = "1";
+      } else {
+        pageImage.style.opacity = "0";
+
+        pageImage.onload = () => {
+          if (
+            renderToken === photoRenderToken &&
+            activeAlbum === album &&
+            album.photos[activePage]?.src === requestedSrc
+          ) {
+            pageImage.style.opacity = "1";
+          }
+        };
+      }
+    });
+  }
+
+  pageCaption.textContent = photo.caption || "";
+  document.getElementById("printedPageNumber").textContent =
+    String(activePage + 1).padStart(2, "0");
+
+  pageCounter.textContent = `${activePage + 1} / ${total}`;
+
+  document.getElementById("previousPage").disabled = activePage === 0;
+  document.getElementById("previousPageBottom").disabled = activePage === 0;
+  document.getElementById("nextPage").disabled = activePage === total - 1;
+  document.getElementById("nextPageBottom").disabled = activePage === total - 1;
+
+  pageDots.innerHTML = album.photos.map((item, index) => `
+    <button
+      class="page-dot ${index === activePage ? "active" : ""}"
+      type="button"
+      data-page="${index}"
+      aria-label="Ir a la página ${index + 1}"
+      aria-current="${index === activePage ? "page" : "false"}">
+    </button>
+  `).join("");
+
+  pageDots.querySelectorAll("[data-page]").forEach(dot => {
+    dot.addEventListener("click", () => {
+      const destination = Number(dot.dataset.page);
+
+      if (destination === activePage) return;
+
+      pageTurnDirection = destination > activePage ? 1 : -1;
+      activePage = destination;
+      renderBookPage();
+    });
+  });
+
+  openBook.classList.remove("turn-forward", "turn-backward");
+  void openBook.offsetWidth;
+
+  if (pageTurnDirection !== 0) {
+    openBook.classList.add(
+      pageTurnDirection > 0 ? "turn-forward" : "turn-backward"
+    );
+  }
+
+  pageTurnDirection = 0;
+  preloadNearbyPhotos();
+}
 
   // Álbum vacío
   if (!activeAlbum.photos.length) {
