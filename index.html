@@ -1160,7 +1160,7 @@
         id: "disneyland-paris",
         title: "Disneyland y París (2024)",
         location: "Nuestra aventura mágica",
-        date: "Un recuerdo para siempre",
+        date: "",
         description: "Nuestro viaje, página a página.",
         cover: "N037009-scaled.jpg",
         color: "",
@@ -1199,7 +1199,7 @@
         id: "budapest",
         title: "Budapest (2025)",
         location: "Budapest",
-        date: "Nuestro viaje",
+        date: "",
         description: "",
         cover: "portada budapest.jpg",
         color: "lavender",
@@ -1281,7 +1281,7 @@
             <div class="book-cover">
               <img src="${album.cover}" alt="" loading="lazy">
               <div class="cover-label">
-                <span class="eyebrow">${album.date}</span>
+                ${album.date ? `<span class="eyebrow">${album.date}</span>` : ""}
                 <h3>${album.title}</h3>
               </div>
             </div>
