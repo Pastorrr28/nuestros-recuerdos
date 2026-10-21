@@ -523,12 +523,12 @@
     /* La página entra girando ligeramente, como al hojear un álbum real. */
     .open-book.turn-forward .book-page {
       transform-origin: left center;
-      animation: pageFlipForward .48s cubic-bezier(.22,.68,.2,1) both;
+      animation: pageFlipForward .18s cubic-bezier(.22,.68,.2,1) both;
     }
 
     .open-book.turn-backward .book-page {
       transform-origin: right center;
-      animation: pageFlipBackward .48s cubic-bezier(.22,.68,.2,1) both;
+      animation: pageFlipBackward .18s cubic-bezier(.22,.68,.2,1) both;
     }
 
     @keyframes pageFlipForward {
@@ -1322,19 +1322,60 @@
     }
 
     function renderBookPage() {
-      if (!activeAlbum || !activeAlbum.photos.length) return;
+      if (!activeAlbum) return;
 
-      const photo = activeAlbum.photos[activePage];
-      const total = activeAlbum.photos.length;
+      // Cada render invalida las cargas pendientes de páginas anteriores.
+      const renderToken = ++photoRenderToken;
+      const album = activeAlbum;
+      const placeholder = document.getElementById("videoPlaceholder");
+      const openBook = document.getElementById("openBook");
+      const total = album.photos.length;
+
+      // Álbum vacío: limpiar imagen, vídeo, texto y controles de la página anterior.
+      if (total === 0) {
+        pageImage.onload = null;
+        pageImage.onerror = null;
+        pageImage.hidden = true;
+        pageImage.style.opacity = "0";
+        pageImage.removeAttribute("src");
+
+        pageVideo.pause();
+        pageVideo.removeAttribute("src");
+        pageVideo.innerHTML = "";
+        pageVideo.hidden = true;
+        pageVideo.load();
+
+        placeholder.hidden = false;
+        placeholder.textContent = "Este álbum todavía está vacío ♡";
+        pageCaption.textContent = "";
+        document.getElementById("printedPageNumber").textContent = "—";
+        pageCounter.textContent = "0 / 0";
+        document.getElementById("previousPage").disabled = true;
+        document.getElementById("previousPageBottom").disabled = true;
+        document.getElementById("nextPage").disabled = true;
+        document.getElementById("nextPageBottom").disabled = true;
+        pageDots.innerHTML = "";
+        openBook.classList.remove("turn-forward", "turn-backward");
+        pageTurnDirection = 0;
+        return;
+      }
+
+      // Mantener siempre el índice dentro de los límites del álbum actual.
+      activePage = Math.max(0, Math.min(activePage, total - 1));
+      const photo = album.photos[activePage];
       const isVideo = photo.type === "video";
 
+      pageImage.onload = null;
+      pageImage.onerror = null;
       pageImage.hidden = isVideo;
       pageVideo.hidden = !isVideo;
-      document.getElementById("videoPlaceholder").hidden = true;
+      placeholder.hidden = true;
 
       if (isVideo) {
+        pageImage.style.opacity = "0";
         pageImage.removeAttribute("src");
         pageVideo.pause();
+        pageVideo.removeAttribute("src");
         pageVideo.innerHTML = `<source src="${photo.src}" type="video/mp4">Tu navegador no puede reproducir este vídeo.`;
         pageVideo.load();
         pageVideo.setAttribute("aria-label", photo.caption || "Vídeo del viaje");
@@ -1342,20 +1383,30 @@
         pageVideo.pause();
         pageVideo.removeAttribute("src");
         pageVideo.innerHTML = "";
-        const renderToken = ++photoRenderToken;
+        pageImage.alt = photo.caption || album.title;
+        pageImage.style.opacity = "0";
+
+        // Cambiar la URL inmediatamente; no esperar a que termine la precarga.
+        // Así, al avanzar rápido, la última página elegida no queda bloqueada
+        // por la descarga/decodificación de una página anterior.
         const requestedSrc = photo.src;
-        pageImage.alt = photo.caption || activeAlbum.title;
-        preloadPhoto(requestedSrc).then(readyImage => {
-          // Si se ha pulsado otra página mientras cargaba, ignoramos esta respuesta.
-          if (!readyImage || renderToken !== photoRenderToken || !activeAlbum || activeAlbum.photos[activePage]?.src !== requestedSrc) return;
-          pageImage.style.opacity = "0";
-          requestAnimationFrame(() => {
-            pageImage.src = requestedSrc;
-            const reveal = () => requestAnimationFrame(() => { pageImage.style.opacity = "1"; });
-            if (pageImage.complete && pageImage.naturalWidth) reveal();
-            else pageImage.onload = reveal;
-          });
-        });
+        const revealIfCurrent = () => {
+          if (
+            renderToken !== photoRenderToken ||
+            activeAlbum !== album ||
+            album.photos[activePage]?.src !== requestedSrc
+          ) return;
+          pageImage.style.opacity = "1";
+        };
+
+        pageImage.onload = revealIfCurrent;
+        pageImage.onerror = () => {
+          if (renderToken === photoRenderToken && activeAlbum === album) {
+            pageImage.style.opacity = "1";
+          }
+        };
+        pageImage.src = requestedSrc;
+        if (pageImage.complete && pageImage.naturalWidth > 0) revealIfCurrent();
       }
 
       pageCaption.textContent = photo.caption || "";
@@ -1368,7 +1419,7 @@
       document.getElementById("nextPage").disabled = activePage === total - 1;
       document.getElementById("nextPageBottom").disabled = activePage === total - 1;
 
-      pageDots.innerHTML = activeAlbum.photos.map((item, index) => `
+      pageDots.innerHTML = album.photos.map((item, index) => `
         <button class="page-dot ${index === activePage ? "active" : ""}"
           type="button" data-page="${index}"
           aria-label="Ir a la página ${index + 1}"
@@ -1385,11 +1436,12 @@
         });
       });
 
-      const openBook = document.getElementById("openBook");
       openBook.classList.remove("turn-forward", "turn-backward");
       void openBook.offsetWidth;
       if (pageTurnDirection !== 0) {
-        openBook.classList.add(pageTurnDirection > 0 ? "turn-forward" : "turn-backward");
+        openBook.classList.add(
+          pageTurnDirection > 0 ? "turn-forward" : "turn-backward"
+        );
       }
       pageTurnDirection = 0;
       preloadNearbyPhotos();
@@ -1405,6 +1457,12 @@
     }
 
     function closeAlbum() {
+      // Invalida cualquier evento de carga que siga pendiente al cerrar.
+      photoRenderToken++;
+      if (pageImage) {
+        pageImage.onload = null;
+        pageImage.onerror = null;
+      }
       if (pageVideo) {
         pageVideo.pause();
         pageVideo.removeAttribute("src");
